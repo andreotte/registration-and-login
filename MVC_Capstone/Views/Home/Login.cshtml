@@ -1,7 +1,13 @@
 ﻿<h2>Login</h2>
+
+@if(Session["User"] != null)
+{
+    <p>@Session["LoggedInMessage"]</p>  
+}
+
 <form action="~/Home/Login" method="post">
-    Email<input type="email" name="Email"/><br />
-    Password<input type="password" name="Password"/><br />
-    <input type="submit"/>
+    Email<input type="email" name="Email" /><br />
+    Password<input type="password" name="Password" /><br />
+    <input type="submit" />
 </form>
 

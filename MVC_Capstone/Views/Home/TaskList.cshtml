@@ -1,10 +1,17 @@
-﻿
-@{
-    ViewBag.Title = "TaskList";
+﻿@using MVC_Capstone.Models;
+
+@if (Session["User"] == null)
+{
+    <p>no one logged in</p>
+}
+else
+{
+    User user = (User)Session["User"];
+
+    <p>@user.Email</p>
+
+    <h2>TaskList</h2>
 }
 
-<h2>TaskList</h2>
-
-
 //Options - use onClick function with JS
-//Options - use checkboxes 
+//Options - use checkboxes

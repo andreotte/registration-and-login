@@ -1,5 +1,6 @@
 ﻿<h2>Register</h2>
-<form action="~/Home/Registration" method="post">
+<p>@Session["User"]</p>
+<form action="~/Home/Index" method="post">
     Email<input type="email" name="Email"/><br />
     Password<input type="password" name="Password" /><br />
     <input type="submit" />
