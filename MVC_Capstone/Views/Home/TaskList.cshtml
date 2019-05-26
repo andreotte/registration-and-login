@@ -1,17 +1,21 @@
 ﻿@using MVC_Capstone.Models;
+<h2>TaskList</h2>
+@Session["TaskListMessage"]
 
-@if (Session["User"] == null)
-{
-    <p>no one logged in</p>
+<form action="~/Home/AddTask" method="get">
+    <input type="submit" name="AddTask" value="Add Task" /><br />
+</form>
+
+@{
+    User user = (User)Session["LoggedInUser"];
+    Tasks tasks = (Tasks)Session["Tasks"];
+
+    foreach (Task task in tasks.ListOfTasks)
+    {
+        <p>Description: @task.Description, Due Date: @task.DueDate, Completed: @task.Completed</p>
+    }
 }
-else
-{
-    User user = (User)Session["User"];
 
-    <p>@user.Email</p>
 
-    <h2>TaskList</h2>
-}
-
-//Options - use onClick function with JS
-//Options - use checkboxes
+@*Options - use onClick function with JS
+    Options - use checkboxes*@

@@ -13,24 +13,24 @@ namespace MVC_Capstone.Controllers
 
         public ActionResult Index()
         {
-            if(Session["User"] == null)
+            if(Session["LoggedInUser"] == null)
             {
                 Session["Message"] = "No one logged in.";
             }
             else
             {
-                User user = (User)Session["User"];
-
+                User user = (User)Session["LoggedInUser"];
                 Session["Message"] = "Logged in: " + user.Email;
             }
             return View();
         }
 
+        //This fires when a new user is registered.
         [HttpPost]
         public ActionResult Index(User user)
         {
             Users users;
-            User currentUser = (User)Session["User"];
+            User currentUser = (User)Session["LoggedInUser"];
 
             if (Session["Users"] == null)
             {
@@ -38,26 +38,22 @@ namespace MVC_Capstone.Controllers
                 users.AddUser(user);
                 Session["Users"] = users;
                 Session["Message"] = "No one is logged in.";
-
             }
-            else if (Session["Users"] != null && Session["User"] == null)
+            else if (Session["Users"] != null && Session["LoggedInUser"] == null)
             {
                 users = (Users)Session["Users"];
                 users.AddUser(user);
-                Session["Users"] = users;
-
-                //Its breaking here when trying to register another user because the current user is now set to null
-                // because hitting login logs the user out. need to fix this and I think everything else should be good. 
+                Session["Users"] = users; 
                 Session["Message"] = "No one is logged in.";
             }
-            else if(Session["Users"] != null && Session["User"] != null)
+            else if(Session["Users"] != null && Session["LoggedInUser"] != null)
             {
                 users = (Users)Session["Users"];
                 users.AddUser(user);
                 Session["Users"] = users;
                 Session["Message"] = "Logged in: " + currentUser.Email;
-
             }
+
             return View();
         }
 
@@ -66,6 +62,7 @@ namespace MVC_Capstone.Controllers
             return View();
         }
 
+        //Is this ever firing?
         [HttpPost]
         public ActionResult Registration(User user)
         {
@@ -74,11 +71,11 @@ namespace MVC_Capstone.Controllers
 
         public ActionResult Login()
         {
-            if(Session["User"] != null)
+            if(Session["LoggedInUser"] != null)
             {
-                User user = (User)Session["User"];
+                User user = (User)Session["LoggedInUser"];
                 Session["LoggedInMessage"] = "Logged in: " + user.Email;
-                Session["User"] = null;
+                Session["LoggedInUser"] = null;
                 return View();
             }
             else
@@ -92,57 +89,85 @@ namespace MVC_Capstone.Controllers
         {
             Users users;
             
-            if (Session["User"] == null && Session["Users"] != null)
+            if (Session["LoggedInUser"] == null && Session["Users"] != null)
             {
                 users = (Users) Session["Users"];
 
-                foreach(User u in users.ListOfUsers)
+                foreach (User u in users.ListOfUsers)
                 {
                     if (user.Email == u.Email && user.Password == u.Password)
                     {
-                        Session["User"] = user;
+                        Session["LoggedInUser"] = user;
                         return RedirectToAction("TaskList");
                     }
                 }
+
             }
             else
             {
                 return View();
             }
-            // This happens when 
-            // check user credentials
-            // if successful, go to task list and start a new user session set to user params. If failed, back to login
+
             return View();
         }
 
         public ActionResult Logout()
         {
-            Session["User"] = null;
+            Session["LoggedInUser"] = null;
             return RedirectToAction("Index");
         }
-
       
         public ActionResult TaskList()
         {
+            User user = (User)Session["LoggedInUser"];
+            if (Session["LoggedInUser"] == null)
+            {
+                Session["TaskListMessage"] = "No one is logged in";
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                Session["TaskListMessage"] = "Logged in: " + user.Email;
 
-            return View();
+                Tasks tasks;
+
+                //First add task action
+                if (Session["Tasks"] == null)
+                {
+                    tasks = new Tasks();
+                    Session["Tasks"] = tasks;
+                }
+                //else if (Session["Tasks"] != null)
+                //{
+                //    tasks = (Tasks)Session["Tasks"];
+                //}
+                return View();
+            }
         }
+
+        [HttpGet]
         public ActionResult AddTask()
         {
-            return RedirectToAction("TaskList");
+            return View();
         }
 
+        //after logging out the task list is getting wiped?
         [HttpPost]
         public ActionResult AddTask(Task task)
         {
-            if (task.Description != null || task.Description != ""&& task.DueDate!= null)
+
+            Tasks tasks = (Tasks)Session["tasks"]; 
+
+            if (task.Description != null || task.Description != "" && task.DueDate != null)
             {
                 // need to add date validation here
                 taskId++;
                 task.Id = taskId;
                 task.Completed = false;
 
-               // ListOfTasks.Add(task);
+                tasks.AddTask(task);
+                tasks = (Tasks)Session["tasks"];
+
                 return RedirectToAction("TaskList");
             }
 

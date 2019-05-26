@@ -795,10 +795,10 @@ window.Modernizr = (function( window, document, undefined ) {
         }
     };
 
-    tests['sessionstorage'] = function() {
+    tests['Session["LoggedInUser"]torage'] = function() {
         try {
-            sessionStorage.setItem(mod, mod);
-            sessionStorage.removeItem(mod);
+            Session["LoggedInUser"]torage.setItem(mod, mod);
+            Session["LoggedInUser"]torage.removeItem(mod);
             return true;
         } catch(e) {
             return false;

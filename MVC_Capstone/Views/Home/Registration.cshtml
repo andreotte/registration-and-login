@@ -1,7 +1,17 @@
-﻿<h2>Register</h2>
-<p>@Session["User"]</p>
+﻿@{
+    if (Session["LoggedInUser"] == null)
+    {
+        <p>No one is logged in.</p>
+    }
+    else
+    {
+        <p>Logged in: @Session["LoggedInUser"]</p>
+    }
+}
+<h2>Register</h2>
+
 <form action="~/Home/Index" method="post">
-    Email<input type="email" name="Email"/><br />
+    Email<input type="email" name="Email" /><br />
     Password<input type="password" name="Password" /><br />
     <input type="submit" />
 </form>
