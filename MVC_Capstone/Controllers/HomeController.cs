@@ -37,16 +37,26 @@ namespace MVC_Capstone.Controllers
                 users = new Users();
                 users.AddUser(user);
                 Session["Users"] = users;
+                Session["Message"] = "No one is logged in.";
+
             }
-            else if (Session["Users"] != null)
+            else if (Session["Users"] != null && Session["User"] == null)
             {
                 users = (Users)Session["Users"];
                 users.AddUser(user);
                 Session["Users"] = users;
 
-                //Its breaking here when trying to rgister anothern user because the current user is now set to null
-                // because ghittingh login logs the user out. need to fix this and I think everythign else should be good. 
+                //Its breaking here when trying to register another user because the current user is now set to null
+                // because hitting login logs the user out. need to fix this and I think everything else should be good. 
+                Session["Message"] = "No one is logged in.";
+            }
+            else if(Session["Users"] != null && Session["User"] != null)
+            {
+                users = (Users)Session["Users"];
+                users.AddUser(user);
+                Session["Users"] = users;
                 Session["Message"] = "Logged in: " + currentUser.Email;
+
             }
             return View();
         }
@@ -59,20 +69,6 @@ namespace MVC_Capstone.Controllers
         [HttpPost]
         public ActionResult Registration(User user)
         {
-            //Users users;
-
-            //if(Session["Users"] == null)
-            //{
-            //    users = new Users();
-            //    users.AddUser(user);
-            //    Session["Users"] = users;
-            //}
-            //else if(Session["Users"] != null)
-            //{
-            //    users = (Users)Session["Users"];
-            //    users.AddUser(user);
-            //    Session["Users"] = users;
-            //}
             return View();
         }
 
@@ -102,10 +98,11 @@ namespace MVC_Capstone.Controllers
 
                 foreach(User u in users.ListOfUsers)
                 {
-                    if (user.Email == u.Email && user.Password == u.Password) 
-                    Session["User"] = user;
-
-                    return RedirectToAction("TaskList");
+                    if (user.Email == u.Email && user.Password == u.Password)
+                    {
+                        Session["User"] = user;
+                        return RedirectToAction("TaskList");
+                    }
                 }
             }
             else
