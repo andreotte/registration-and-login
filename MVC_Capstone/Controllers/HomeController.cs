@@ -101,7 +101,6 @@ namespace MVC_Capstone.Controllers
                         return RedirectToAction("TaskList");
                     }
                 }
-
             }
             else
             {
@@ -117,8 +116,9 @@ namespace MVC_Capstone.Controllers
             return RedirectToAction("Index");
         }
       
-        public ActionResult TaskList()
+        public ActionResult TaskList(Task task)
         {
+
             User user = (User)Session["LoggedInUser"];
             if (Session["LoggedInUser"] == null)
             {
@@ -137,15 +137,29 @@ namespace MVC_Capstone.Controllers
                     tasks = new Tasks();
                     Session["Tasks"] = tasks;
                 }
+                else
+                {
+                    tasks = (Tasks)Session["Tasks"];
+                }
+
+                if (task.Completed == true)
+                {
+                    foreach(Task t in tasks.ListOfTasks)
+                    {
+                        if(t.Description == task.Description)
+                        {
+                            t.Completed = !t.Completed;
+                        }
+                    }
+
+                    Session["tasks"] = tasks;
+                }
                 return View();
+
             }
         }
 
-        // An overload for the fucking checkboxes
-        //public ActionResult TaskList()
-        //{
-            // FUCK CHECKBOXES!!!!!!!!!!!!!!!!!
-        //}
+
 
         [HttpGet]
         public ActionResult AddTask()
@@ -153,7 +167,6 @@ namespace MVC_Capstone.Controllers
             return View();
         }
 
-        //after logging out the task list is getting wiped?
         [HttpPost]
         public ActionResult AddTask(Task task)
         {
@@ -162,7 +175,6 @@ namespace MVC_Capstone.Controllers
 
             if (task.Description != null || task.Description != "" && task.DueDate != null)
             {
-                // need to add date validation here
                 taskId++;
                 task.Completed = false;
                 task.TaskCreator = user;

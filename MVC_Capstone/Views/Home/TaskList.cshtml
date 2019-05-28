@@ -9,28 +9,42 @@
 
 <h3>Tasks</h3>
 
-    @{
-        User user = (User)Session["LoggedInUser"];
-        Tasks tasks = (Tasks)Session["Tasks"];
-    }
-    
-    <form action="~/Home/TaskList" method="get">
-        <ol id="TaskList">
-            @for (int i = 0; i < tasks.ListOfTasks.Count; i++)
-            {
-                if (tasks.ListOfTasks[i].TaskCreator.Email == user.Email)
-                {
-                    <li>
+@{
+    User user = (User)Session["LoggedInUser"];
+    Tasks tasks = (Tasks)Session["Tasks"];
+    string completed = "";
+}
 
-                        <p>Description: @tasks.ListOfTasks[i].Description| Due Date: @tasks.ListOfTasks[i].DueDate| Belongs to: @tasks.ListOfTasks[i].TaskCreator.Email| Completed: @tasks.ListOfTasks[i].Completed</p>
-                        @* Fuck Checkboxes
-                        Completed: @Html.CheckBoxFor(m => tasks.ListOfTasks[i].Completed) @tasks.ListOfTasks[i].Completed
-                        *@
-                    </li>
+
+<form action="~/Home/TaskList" method="get">
+    <ol id="TaskList">
+        @for (int i = 0; i < tasks.ListOfTasks.Count; i++)
+        {
+            if (tasks.ListOfTasks[i].TaskCreator.Email == user.Email)
+            {
+                if (@tasks.ListOfTasks[i].Completed == true)
+                {
+                    completed = "yes";
                 }
+                else
+                {
+                    completed = "no";
+                }
+                <li>
+
+                    <p>Description: @tasks.ListOfTasks[i].Description| Due Date: @tasks.ListOfTasks[i].DueDate| Belongs to: @tasks.ListOfTasks[i].TaskCreator.Email| Completed: @completed</p>
+                    @* Fuck Checkboxes
+                        Completed: @Html.CheckBoxFor(m => tasks.ListOfTasks[i].Completed) @tasks.ListOfTasks[i].Completed
+                    *@
+                    Change Completed Status: <input type="checkbox" name="Completed" value="true" />
+                    Type description to confirm <input type="text" name="Description" />
+                </li>
             }
-        </ol>
-        <input type="submit" value="submit"/>
-    </form>
+        }
+    </ol>
+    <input type="submit" value="submit" />
+</form>
+
+
 
 
