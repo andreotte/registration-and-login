@@ -137,13 +137,15 @@ namespace MVC_Capstone.Controllers
                     tasks = new Tasks();
                     Session["Tasks"] = tasks;
                 }
-                //else if (Session["Tasks"] != null)
-                //{
-                //    tasks = (Tasks)Session["Tasks"];
-                //}
                 return View();
             }
         }
+
+        // An overload for the fucking checkboxes
+        //public ActionResult TaskList()
+        //{
+            // FUCK CHECKBOXES!!!!!!!!!!!!!!!!!
+        //}
 
         [HttpGet]
         public ActionResult AddTask()
@@ -155,16 +157,15 @@ namespace MVC_Capstone.Controllers
         [HttpPost]
         public ActionResult AddTask(Task task)
         {
-
-            Tasks tasks = (Tasks)Session["tasks"]; 
+            Tasks tasks = (Tasks)Session["tasks"];
+            User user = (User)Session["LoggedInUser"];
 
             if (task.Description != null || task.Description != "" && task.DueDate != null)
             {
                 // need to add date validation here
                 taskId++;
-                task.Id = taskId;
                 task.Completed = false;
-
+                task.TaskCreator = user;
                 tasks.AddTask(task);
                 tasks = (Tasks)Session["tasks"];
 
